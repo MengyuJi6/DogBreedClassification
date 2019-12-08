@@ -149,8 +149,9 @@ class ResNet(nn.Module):
 
         x = self.avgpool(x)
         x = x.view(x.size(0), -1)
+        print('x shape {}'.format(x.shape))
         x = self.fc(x)
-        # print('x shape {}'.format(x.shape))
+        print('x shape {}'.format(x.shape))
         # time.sleep(30)
         return x
 

@@ -4,21 +4,23 @@
 #
 # Created by: PyQt5 UI code generator 5.11.3
 #
+# WARNING! All changes made in this file will be lost!
 import torch
 import torch.nn as nn
 import numpy as np
+import time
 import cv2
 from os import path
+import os
 from PyQt5 import QtCore, QtGui, QtWidgets
+# from PyQt5.QtCore import *
+# from PyQt5.QtGui import *
 import test_functions as tfc
 import copy
 import qimage2ndarray
 
-
-
-model_path = path.expanduser('~/Desktop/dog-breed-identification/dog-breed-classification/result/model/')
-img_folder = path.expanduser('~/Desktop/dog-breed-identification/test/')
-
+model_path = '~/Desktop/dog-breed-identification/dog-breed-classification/result/model/'
+img_folder = '~/Desktop/dog-breed-identification/test/'
 img_path = None
 test_img = None
 transparenting = 50
@@ -26,6 +28,8 @@ transparenting = 50
 heatmap0 = None
 heatmap1 = None
 
+with open("dogbreeds.txt", 'r') as f:
+    dogbreeds = [line.rstrip('\n') for line in f]
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -149,9 +153,11 @@ class Ui_MainWindow(object):
         print('scores {}'.format(scores))
         print('preds {}'.format(preds))
         preds_result = preds[0]
+        preds_breed = dogbreeds[preds_result]
         scores = scores.data.cpu().numpy()
         confidence = scores[0][preds_result] * 100
-        print('preds result {}'.format(preds_result))
+        print('preds result {}'.format(preds_breed))
+
         if preds_result == 0:
             # print('This tissue is cancer negative with confidence of {:.2f}%!'.format(confidence))
             status = 'Negative'
@@ -159,7 +165,7 @@ class Ui_MainWindow(object):
             # print('This tissue is cancer positive with confidence of {:.2f}%!'.format(confidence))
             status = 'Positive'
 
-        self.label_2.setText('{:.2f}% {}'.format(confidence, status))
+        self.label_2.setText('{:.2f}% {}'.format(confidence, preds_breed))
 
     def gen_heatmap(self):
         global heatmap0, heatmap1
@@ -245,9 +251,6 @@ def qt_image_to_array(img, share_memory=False):
 
 if __name__ == "__main__":
     import sys
-
-    # print(torch.__version__)
-
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
