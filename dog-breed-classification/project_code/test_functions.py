@@ -31,9 +31,11 @@ data_transform = transforms.Compose([
         # transforms.Resize(320),
         # transforms.Resize(320),
         # transforms.CenterCrop(224),
-        transforms.Resize(224),
+
+        # transforms.Resize(224),
+        transforms.RandomResizedCrop(224, scale=(0.9, 1), ratio=(1.0,1.0)),
         transforms.ToTensor(),
-        transforms.Normalize(vec_mean, vec_std)
+        # transforms.Normalize(vec_mean, vec_std)
     ])
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -170,7 +172,8 @@ def load_model(modelName):
     model_x = resnet.resnet50()
     num_ftrs = model_x.fc.in_features
 
-    model_x.fc = nn.Linear(num_ftrs, 2)
+    # model_x.fc = nn.Linear(num_ftrs, 2)
+    model_x.fc = nn.Linear(num_ftrs, 120)
     # model_x.fc = nn.Linear(513, 2)
 
     # data_dir = path.expanduser('~/tmp/my_cross_val_10/fold_0')
