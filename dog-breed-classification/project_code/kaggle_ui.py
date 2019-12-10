@@ -19,8 +19,8 @@ import test_functions as tfc
 import copy
 import qimage2ndarray
 
-model_path = '~/Desktop/dog-breed-identification/dog-breed-classification/result/model/'
-img_folder = '~/Desktop/dog-breed-identification/test/'
+model_path = '~/Desktop/DogBreedClassification/dog-breed-classification/result/model/'
+img_folder = '~/Desktop/DogBreedClassification/test/'
 img_path = None
 test_img = None
 transparenting = 50
@@ -34,67 +34,38 @@ with open("dogbreeds.txt", 'r') as f:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(640, 530)
+        MainWindow.resize(640, 450)
+        key.pngMainWindow.setStyleSheet("#MainWindow { background-color: yellow; }")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
 
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(40, 40, 99, 27))
+        self.pushButton.setGeometry(QtCore.QRect(45, 80, 99, 27))
         self.pushButton.setObjectName("pushButton")
 
         self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_2.setGeometry(QtCore.QRect(40, 100, 99, 27))
+        self.pushButton_2.setGeometry(QtCore.QRect(45, 140, 99, 27))
         self.pushButton_2.setObjectName("pushButton_2")
 
         self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_3.setGeometry(QtCore.QRect(40, 160, 99, 27))
+        self.pushButton_3.setGeometry(QtCore.QRect(45, 200, 99, 27))
         self.pushButton_3.setObjectName("pushButton_3")
 
-        self.pushButton_4 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_4.setGeometry(QtCore.QRect(40, 220, 99, 27))
-        self.pushButton_4.setObjectName("pushButton_4")
-
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(200, 20, 400, 400))
+        self.label.setGeometry(QtCore.QRect(200, 20, 400, 300))
         self.label.setFrameShape(QtWidgets.QFrame.Box)
         self.label.setText("")
         self.label.setObjectName("label")
 
-        self.radioButton = QtWidgets.QRadioButton(self.centralwidget)
-        self.radioButton.setGeometry(QtCore.QRect(50, 270, 117, 22))
-        self.radioButton.setObjectName("radioButton")
-
-        self.radioButton_2 = QtWidgets.QRadioButton(self.centralwidget)
-        self.radioButton_2.setGeometry(QtCore.QRect(50, 300, 117, 22))
-        self.radioButton_2.setObjectName("radioButton_2")
-        self.radioButton_2.setChecked(True)
-
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(20, 330, 141, 111))
+        self.label_2.setGeometry(QtCore.QRect(340, 330, 300, 111))
         self.label_2.setObjectName("label_2")
-
-        self.horizontalSlider = QtWidgets.QSlider(self.centralwidget)
-        self.horizontalSlider.setGeometry(QtCore.QRect(199, 430, 401, 29))
-        self.horizontalSlider.setMinimum(0)
-        self.horizontalSlider.setMaximum(100)
-        self.horizontalSlider.setValue(transparenting)
-        self.horizontalSlider.setTickPosition(QtWidgets.QSlider.TicksBelow)
-        self.horizontalSlider.setTickInterval(5)
-        self.horizontalSlider.setOrientation(QtCore.Qt.Horizontal)
-        self.horizontalSlider.setObjectName("horizontalSlider")
-
-        self.label_3 = QtWidgets.QLabel(self.centralwidget)
-        self.label_3.setGeometry(QtCore.QRect(360, 465, 120, 20))
-        self.label_3.setObjectName("label_3")
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 641, 25))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -104,21 +75,15 @@ class Ui_MainWindow(object):
         self.pushButton.clicked.connect(self.load_model)
         self.pushButton_2.clicked.connect(self.setImage)
         self.pushButton_3.clicked.connect(self.predict)
-        self.pushButton_4.clicked.connect(self.gen_heatmap)
-        self.horizontalSlider.valueChanged.connect(self.valuechange)
 
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "DogBreedClassification"))
         self.pushButton.setText(_translate("MainWindow", "Load Model"))
         self.pushButton_2.setText(_translate("MainWindow", "Load Image"))
         self.pushButton_3.setText(_translate("MainWindow", "Predict"))
-        self.pushButton_4.setText(_translate("MainWindow", "Heatmap"))
-        self.radioButton.setText(_translate("MainWindow", "Negative"))
-        self.radioButton_2.setText(_translate("MainWindow", "Positive"))
-        self.label_2.setText(_translate("MainWindow", "Progress Diary"))
-        self.label_3.setText(_translate("MainWindow", "Transparenting"))
+        self.label_2.setText(_translate("MainWindow", ""))
 
     def load_model(self):
         modelName, _ = QtWidgets.QFileDialog.getOpenFileName(None, "Select Image", model_path,
@@ -165,54 +130,7 @@ class Ui_MainWindow(object):
             # print('This tissue is cancer positive with confidence of {:.2f}%!'.format(confidence))
             status = 'Positive'
 
-        self.label_2.setText('{:.2f}% {}'.format(confidence, preds_breed))
-
-    def gen_heatmap(self):
-        global heatmap0, heatmap1
-        self.horizontalSlider.setValue(50)
-        heatmap0 = cv2.imread('medium/heatmap0.jpg')
-        heatmap1 = cv2.imread('medium/heatmap1.jpg')
-
-        ratio = transparenting / 100
-        print('Negative {}'.format(self.radioButton.isChecked()))
-        print('Positive {}'.format(self.radioButton_2.isChecked()))
-        if self.radioButton.isChecked():
-            heatmap = heatmap0
-        else:
-            heatmap = heatmap1
-
-        raw_img = cv2.imread(img_path)
-        raw_img = cv2.resize(raw_img, (heatmap.shape[0], heatmap.shape[1]))
-        merge = heatmap * ratio + raw_img * (1 - ratio)
-
-        qimage = qimage2ndarray.array2qimage(merge)
-        pixmap = QtGui.QPixmap(qimage)
-        pixmap = pixmap.scaled(self.label.width(), self.label.height(),
-                               QtCore.Qt.KeepAspectRatio)  # Scale pixmap
-        self.label.setPixmap(pixmap)
-
-        cv2.imwrite('test.jpg', merge)
-        print('successfully converted!')
-        self.label.setPixmap(pixmap)  # Set the pixmap onto the label
-        self.label.setAlignment(QtCore.Qt.AlignCenter)  # Align the label to center
-
-    def valuechange(self):
-        # global transparenting
-        ratio = self.horizontalSlider.value() / 100
-        if self.radioButton.isChecked():
-            heatmap = heatmap0
-        else:
-            heatmap = heatmap1
-        # heatmap = cv2.imread('medium/heatmap{}.jpg'.format(class_idx))
-        raw_img = cv2.imread(img_path)
-        raw_img = cv2.resize(raw_img, (heatmap.shape[0], heatmap.shape[1]))
-        merge = heatmap * ratio + raw_img * (1 - ratio)
-
-        qimage = qimage2ndarray.array2qimage(merge)
-        pixmap = QtGui.QPixmap(qimage)
-        pixmap = pixmap.scaled(self.label.width(), self.label.height(),
-                               QtCore.Qt.KeepAspectRatio)  # Scale pixmap
-        self.label.setPixmap(pixmap)
+        self.label_2.setText('Dog breed: {}\nConfidence Level: {:.2f}%'.format(preds_breed, confidence))
 
 def hello():
     print('hello world {}'.format(img_path))
@@ -257,4 +175,3 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
-
