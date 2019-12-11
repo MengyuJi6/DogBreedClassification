@@ -8,17 +8,8 @@
 
 import torch
 import torch.nn as nn
-import numpy as np
-import time
-import cv2
-from os import path
-import os
 from PyQt5 import QtCore, QtGui, QtWidgets
-# from PyQt5.QtCore import *
-# from PyQt5.QtGui import *
 import test_functions as tfc
-import copy
-import qimage2ndarray
 
 model_path = '~/Desktop/DogBreedClassification/dog-breed-classification/result/model/'
 img_folder = '~/Desktop/DogBreedClassification/test/'
@@ -223,13 +214,6 @@ class Ui_MainWindow(object):
         scores = scores.data.cpu().numpy()
         confidence = scores[0][preds_result] * 100
         print('preds result {}'.format(preds_breed))
-
-        if preds_result == 0:
-            # print('This tissue is cancer negative with confidence of {:.2f}%!'.format(confidence))
-            status = 'Negative'
-        else:
-            # print('This tissue is cancer positive with confidence of {:.2f}%!'.format(confidence))
-            status = 'Positive'
 
         self.lineEdit.setText('{}'.format(preds_breed))
         self.lineEdit_3.setText('{:.2f}%'.format(confidence))
